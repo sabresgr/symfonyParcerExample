@@ -9,15 +9,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Validation;
 
-class Product
-{
-    public $code;
-    public $name;
-    public $description;
-    public $stock;
-    public $cost;
-    public $discontinued;
-}
 class ParcerController extends AbstractController
 {
 
@@ -32,8 +23,6 @@ class ParcerController extends AbstractController
             else {
                 $arrResult['invalid'][] = $item;
                 $lastItem=count($arrResult['invalid'])-1;
-                //echo $lastItem;
-                //print_r($arrResult);
                 foreach($errors as $error)
                     $arrResult['invalid'][$lastItem]['errors'][$error->getPropertyPath()]=$error->getMessage();
 
