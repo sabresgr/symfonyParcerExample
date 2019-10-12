@@ -20,7 +20,7 @@ class ParserCommand extends Command
         $this
             ->setDescription('Test parser')
             ->addArgument('filename', InputArgument::OPTIONAL, 'path to csv file')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addOption('test', null, InputOption::VALUE_NONE, 'Test without db push')
         ;
     }
 
@@ -28,10 +28,14 @@ class ParserCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $fileName = $input->getArgument('filename');
-
         self::fileNameCheck($fileName,$io);
-        print_r(ParcerController::processFile($fileName));
-
+        $data=ParcerController::processFile($fileName);
+        if(!$input->getOption('test'))
+            if(count($data['valid']))
+            {
+                echo "NotTest";
+            }
+        self::printInformation($data,$io);
 
 
 
@@ -45,6 +49,37 @@ class ParserCommand extends Command
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 */  }
+
+    protected static function printInformation($data,SymfonyStyle &$io)
+    {
+        $info=self::createOutputInformation($data);
+        $io->text("Number of records: ".$info["count"]["all"]);
+        $io->success("Number of successful: ".$info["count"]["success"]);
+        $io->warning("Number of faild: ".$info["count"]["faild"]);
+        $io->text($info['text']);
+    }
+    protected static function createOutputInformation($data): array
+    {
+        $arrResult=array();
+        $arrResult["count"]["success"]=count($data['valid']);
+        $arrResult["count"]["faild"]=count($data['invalid']);
+        $arrResult["count"]["all"]=$arrResult["count"]["success"]+$arrResult["count"]["faild"];
+        $text="";
+        foreach($data['invalid'] as $item)
+        {
+            $text.=implode(',', $item['values'])."\n";
+            //$text.=implode("\n",$item['errors'])."\n".str_repeat ("-",30)."\n";
+            $text.=implode("\n", array_map(
+                function ($v, $k) {
+                    return $k.':'.$v;
+                },
+                $item['errors'],
+                array_keys($item['errors'])))
+                ."\n".str_repeat ("-",30)."\n";
+        }
+        $arrResult['text']=$text;
+        return $arrResult;
+    }
 
 
     protected static function fileNameCheck($fileName,SymfonyStyle &$io)

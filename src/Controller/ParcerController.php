@@ -19,9 +19,9 @@ class ParcerController extends AbstractController
         foreach ($data as $item) {
             $errors=self::validateProduct($item);
             if(!count($errors))
-                $arrResult['valid'][]=$item;
+                $arrResult['valid'][]['values']=$item;
             else {
-                $arrResult['invalid'][] = $item;
+                $arrResult['invalid'][]['values'] = $item;
                 $lastItem=count($arrResult['invalid'])-1;
                 foreach($errors as $error)
                     $arrResult['invalid'][$lastItem]['errors'][$error->getPropertyPath()]=$error->getMessage();
