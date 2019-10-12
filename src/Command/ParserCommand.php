@@ -8,6 +8,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use App\Controller\ParcerController;
+
 
 class ParserCommand extends Command
 {
@@ -17,7 +19,7 @@ class ParserCommand extends Command
     {
         $this
             ->setDescription('Test parser')
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+            ->addArgument('filename', InputArgument::OPTIONAL, 'path to csv file')
             ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
@@ -25,16 +27,37 @@ class ParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $fileName = $input->getArgument('filename');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
-        }
+        self::fileNameCheck($fileName,$io);
+        print_r(ParcerController::processFile($fileName));
+
+
+
+
+
+/*
 
         if ($input->getOption('option1')) {
+            $io->comment("option");
             // ...
         }
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+*/  }
+
+
+    protected static function fileNameCheck($fileName,SymfonyStyle &$io)
+    {
+
+        if (!$fileName) {
+            $io->error('Enter input file path');
+            exit(-1);
+        }
+        if(!file_exists($fileName)) {
+            $io->error('File not exists');
+            exit(-2);
+        }
+
     }
 }
