@@ -4,10 +4,19 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * Tblproductdata
  *
- * @ORM\Table(name="tblProductData", uniqueConstraints={@ORM\UniqueConstraint(name="strProductCode", columns={"strProductCode"})})
+ * @ORM\Table(
+ *     indexes={
+ *     @ORM\Index(name="idx_code", columns={"strProductCode"}),
+ *     },
+ *     name="tblProductData",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="strProductCode", columns={"strProductCode"})
+ *     }
+ * )
  * @ORM\Entity
  */
 class Tblproductdata
@@ -40,6 +49,7 @@ class Tblproductdata
      * @var \DateTime|null
      *
      * @ORM\Column(name="dtmAdded", type="datetime",options={"default"="CURRENT_TIMESTAMP"})
+     *
      */
     private $dtmadded;
 
@@ -73,6 +83,12 @@ class Tblproductdata
      */
     private $floatCost;
 
+    public function __construct()
+    {
+
+        $this->stmtimestamp=new \DateTime();
+        $this->dtmadded=new \DateTime();
+    }
 
     public function getIdProductType(): ?ProductTypes
     {
@@ -131,8 +147,8 @@ class Tblproductdata
 
     public function setDtmDiscontinued($dis): self
     {
-       // if($dis=="yes")
-      //      $this->dtmdiscontinued = 'CURRENT_TIMESTAMP';
+        if($dis=="yes")
+            $this->dtmdiscontinued = new \DateTime();
 
         return $this;
     }

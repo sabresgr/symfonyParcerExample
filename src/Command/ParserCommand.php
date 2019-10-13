@@ -45,11 +45,19 @@ class ParserCommand extends Command
             if(count($data['valid']))
             {
                 foreach ($data['valid'] as $record) {
-                    $prodTypeId = $this->getProductTypeId($record);
+                    $prodType = $this->getProductTypeId($record);
+                    print_r($record);
                     $product=new Tblproductdata();
-                    //$em->persist($product);
-                    //print_r($em->flush());
-                    //exit();
+                    $product->setStrProductCode($record['values']['Product Code']);
+                    $product->setIdProductType($prodType);
+                    $product->setFloatCost($record['values']['Cost in GBP']);
+                    $product->setIntStock($record['values']['Stock']);
+                    $product->setStrProductDescription($record['values']['Product Description']);
+                    $product->setDtmDiscontinued($record['values']['Discontinued']);
+
+                    $em->persist($product);
+                    var_dump($em->flush());
+                    exit();
 
                 }
             }
@@ -81,10 +89,10 @@ class ParserCommand extends Command
                 $pt->setStrTypeName($record['values']["Product Name"]);
                 $em->persist($pt);
                 $em->flush();
-                return $pt->getId();
+                return $pt;
             }
             else
-                return $result->getId();
+                return $result;
 
 
     }
