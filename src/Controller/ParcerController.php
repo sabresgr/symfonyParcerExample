@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Validation;
 
 /**
+ * Pricessed with file data
  * Class ParcerController
  * @package App\Controller
  */
@@ -17,6 +18,7 @@ class ParcerController extends AbstractController
 {
 
     /**
+     * Make result array
      * @param $fileName
      * @return array
      */
@@ -40,6 +42,7 @@ class ParcerController extends AbstractController
     }
 
     /**
+     * Read file and convert to PHP data
      * @param $fileName
      * @return mixed
      */
@@ -52,6 +55,7 @@ class ParcerController extends AbstractController
     }
 
     /**
+     * Make data validation
      * @param $data
      * @return \Symfony\Component\Validator\ConstraintViolationListInterface
      */
@@ -109,14 +113,5 @@ class ParcerController extends AbstractController
 
 
 
-    /**
-     * @Route("/parcer", name="parcer")
-     */
-    public function index()
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ParcerController.php',
-        ]);
-    }
+
 }
