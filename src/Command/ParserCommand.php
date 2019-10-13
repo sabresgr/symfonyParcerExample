@@ -14,16 +14,34 @@ use App\Controller\ParcerController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
+/**
+ * Class ParserCommand
+ * @package App\Command
+ */
 class ParserCommand extends Command
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:parser';
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
     private $container;
+
+    /**
+     * ParserCommand constructor.
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct();
         $this->container = $container;
     }
 
+    /**
+     *
+     */
     protected function configure()
     {
         $this
@@ -33,6 +51,12 @@ class ParserCommand extends Command
         ;
     }
 
+    /**
+     * Method with main logic of command
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|void|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
@@ -45,7 +69,7 @@ class ParserCommand extends Command
             {
 
                 foreach ($data['valid'] as $record) {
-                    $prodType = $this->getProductTypeId($record);
+                    $prodType = $this->getProductTypeId($record['values'][FN_PRODUCT_NAME]);
                     $this->setProduct($record,$prodType,$counter);
                 }
             }
@@ -53,39 +77,49 @@ class ParserCommand extends Command
         self::printInformation($data,$io);
 
 }
-    protected function setProduct($record,$prodType,array &$counter)
+
+    /**
+     * Method for insertion or update(if productCode exists in table) row for table Tblproductdata.
+     * @param array $record
+     * @param \App\Entity\ProductTypes $prodType
+     * @param array $counter param for count inserts and updates
+     */
+    protected function setProduct($record, $prodType, array &$counter)
     {
         $em = $this->container->get('doctrine')->getManager();
         $repositoryProduct = $em->getRepository(Tblproductdata::class);
-        $product=$repositoryProduct->find($record['values']['Product Code']);
+        $product=$repositoryProduct->find($record['values'][FN_PRODUCT_CODE]);
         if(is_null($product)) {
             $product = new Tblproductdata();
-            $product->setStrProductCode($record['values']['Product Code']);
+            $product->setStrProductCode($record['values'][FN_PRODUCT_CODE]);
             $counter['insert']++;
         }
         else
             $counter['update']++;
         $product->setIdProductType($prodType);
-        $product->setFloatCost($record['values']['Cost in GBP']);
-        $product->setIntStock($record['values']['Stock']);
-        $product->setStrProductDescription($record['values']['Product Description']);
-        $product->setDtmDiscontinued($record['values']['Discontinued']);
+        $product->setFloatCost($record['values'][FN_COST]);
+        $product->setIntStock($record['values'][FN_STOCK]);
+        $product->setStrProductDescription($record['values'][FN_PRODUCT_DESCRIPTION]);
+        $product->setDtmDiscontinued($record['values'][FN_IS_DISCONT]);
         $em->persist($product);
         $em->flush();
 
     }
 
-    protected function getProductTypeId($record)
+    /**
+     * Get ProductType entity object by strTypeName
+     * @param array $prodType Name of type
+     * @return \App\Entity\ProductTypes
+     */
+    protected function getProductTypeId($prodType)
     {
             $em = $this->container->get('doctrine')->getManager();
             $repositoryProdType = $em->getRepository(ProductTypes::class);
-
-            $prodType=$record['values']["Product Name"];
             $result=$repositoryProdType->findOneBy(["strTypeName"=>$prodType]);
             if(is_null($result))
             {
                 $pt=new ProductTypes();
-                $pt->setStrTypeName($record['values']["Product Name"]);
+                $pt->setStrTypeName($prodType);
                 $em->persist($pt);
                 $em->flush();
                 return $pt;
@@ -95,7 +129,13 @@ class ParserCommand extends Command
 
 
     }
-    protected static function printInformation($data,SymfonyStyle &$io)
+
+    /**
+     * Printing result data
+     * @param $data
+     * @param \Symfony\Component\Console\Style\SymfonyStyle $io
+     */
+    protected static function printInformation($data, SymfonyStyle &$io)
     {
         $info=self::createOutputInformation($data);
         $io->text("Number of records: ".$info["count"]["all"]);
@@ -103,6 +143,12 @@ class ParserCommand extends Command
         $io->warning("Number of faild: ".$info["count"]["faild"]);
         $io->text($info['text']);
     }
+
+    /**
+     * Create output information for printing
+     * @param $data
+     * @return array
+     */
     protected static function createOutputInformation($data): array
     {
         $arrResult=array();
@@ -111,24 +157,31 @@ class ParserCommand extends Command
         $arrResult["count"]["db"]=$data['dbcount'];
         $arrResult["count"]["all"]=$arrResult["count"]["success"]+$arrResult["count"]["faild"];
         $text="";
+        $charCount=exec("tput cols");
+        if(!is_numeric($charCount))
+            $charCount=30;
         foreach($data['invalid'] as $item)
         {
             $text.=implode(',', $item['values'])."\n";
-            //$text.=implode("\n",$item['errors'])."\n".str_repeat ("-",30)."\n";
             $text.=implode("\n", array_map(
                 function ($v, $k) {
                     return $k.':'.$v;
                 },
                 $item['errors'],
                 array_keys($item['errors'])))
-                ."\n".str_repeat ("-",30)."\n";
+                ."\n".str_repeat ("-",$charCount)."\n";
         }
         $arrResult['text']=$text;
         return $arrResult;
     }
 
 
-    protected static function fileNameCheck($fileName,SymfonyStyle &$io)
+    /**
+     * Check input file
+     * @param $fileName
+     * @param \Symfony\Component\Console\Style\SymfonyStyle $io
+     */
+    protected static function fileNameCheck($fileName, SymfonyStyle &$io)
     {
 
         if (!$fileName) {

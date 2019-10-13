@@ -73,6 +73,10 @@ class Tblproductdata
      */
     private $floatCost;
 
+    /**
+     * Tblproductdata constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
 
@@ -80,12 +84,19 @@ class Tblproductdata
         $this->dtmadded=new \DateTime();
     }
 
+    /**
+     * @return \App\Entity\ProductTypes|null
+     */
     public function getIdProductType(): ?ProductTypes
     {
 
         return $this->idProductType;
     }
 
+    /**
+     * @param \App\Entity\ProductTypes|null $idProductType
+     * @return \App\Entity\Tblproductdata
+     */
     public function setIdProductType(?ProductTypes $idProductType): self
     {
         $this->idProductType = $idProductType;
@@ -93,11 +104,18 @@ class Tblproductdata
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getIntStock(): ?int
     {
         return $this->intStock;
     }
 
+    /**
+     * @param int $intStock
+     * @return \App\Entity\Tblproductdata
+     */
     public function setIntStock(int $intStock): self
     {
         $this->intStock = $intStock;
@@ -105,12 +123,19 @@ class Tblproductdata
         return $this;
     }
 
+    /**
+     * @return float|null
+     */
     public function getFloatCost(): ?float
     {
         return $this->floatCost;
     }
 
 
+    /**
+     * @param float $floatCost
+     * @return \App\Entity\Tblproductdata
+     */
     public function setFloatCost(float $floatCost): self
     {
         $this->floatCost = $floatCost;
@@ -118,12 +143,21 @@ class Tblproductdata
         return $this;
     }
 
+    /**
+     * @param string $productCode
+     * @return \App\Entity\Tblproductdata
+     */
     public function setStrProductCode(string $productCode): self
     {
         $this->strproductcode = $productCode;
 
         return $this;
     }
+
+    /**
+     * @param string $productDescription
+     * @return \App\Entity\Tblproductdata
+     */
     public function setStrProductDescription(string $productDescription): self
     {
         $this->strproductdesc = $productDescription;
@@ -131,6 +165,11 @@ class Tblproductdata
         return $this;
     }
 
+    /**
+     * @param $dis
+     * @return \App\Entity\Tblproductdata
+     * @throws \Exception
+     */
     public function setDtmDiscontinued($dis): self
     {
         if($dis=="yes")
