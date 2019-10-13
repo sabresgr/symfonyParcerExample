@@ -9,6 +9,9 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Validation;
 
+
+
+
 /**
  * Pricessed with file data
  * Class ParcerController
@@ -17,6 +20,7 @@ use Symfony\Component\Validator\Validation;
 class ParcerController extends AbstractController
 {
 
+
     /**
      * Make result array
      * @param $fileName
@@ -24,6 +28,7 @@ class ParcerController extends AbstractController
      */
     public static function processFile($fileName)
     {
+
         $data=self::readFile($fileName);
         $arrResult=array("valid"=>array(),"invalid"=>array());
         foreach ($data as $item) {
@@ -48,9 +53,10 @@ class ParcerController extends AbstractController
      */
     protected static function readFile($fileName)
     {
-
         $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
         $data = $serializer->decode(file_get_contents($fileName), 'csv');
+        if(isset($data[FN_STOCK]))
+            $data=array(0=>$data);
         return $data;
     }
 
@@ -64,40 +70,40 @@ class ParcerController extends AbstractController
         $validator = Validation::createValidator();
         $constraint = new Constraints\Collection(array(
 
-            'Product Code' => new Constraints\Length([
+            FN_PRODUCT_CODE => new Constraints\Length([
                 'min' => 1,
                 'max' => 10,
                 'minMessage' => ' must be at least {{ limit }} characters long',
                 'maxMessage' => ' cannot be longer than {{ limit }} characters',
             ]),
-            'Product Name' => new Constraints\Length([
+            FN_PRODUCT_NAME => new Constraints\Length([
                 'min' => 1,
                 'max' => 50,
                 'minMessage' => ' must be at least {{ limit }} characters long',
                 'maxMessage' => ' cannot be longer than {{ limit }} characters',
             ]),
-            'Product Description' => new Constraints\Length([
+            FN_PRODUCT_DESCRIPTION => new Constraints\Length([
                 'min' => 1,
                 'max' => 255,
                 'minMessage' => ' must be at least {{ limit }} characters long',
                 'maxMessage' => ' cannot be longer than {{ limit }} characters',
             ]),
-            'Stock' =>[
+            FN_STOCK =>[
                 new Constraints\Type([
                 'type' => 'numeric',
                 'message' => 'The value {{ value }} is not a valid {{ type }}.',
                 ]),
-                new Constraints\GreaterThanOrEqual(['value'=>10])
+                new Constraints\GreaterThanOrEqual(['value'=>MIN_STOCK])
             ],
-            'Cost in GBP' => [
+            FN_COST => [
                 new Constraints\Type([
                 'type' => 'numeric',
                 'message' => 'The value {{ value }} is not a valid {{ type }}.',
                 ]),
-                new Constraints\LessThanOrEqual(['value'=>1000]),
-                new Constraints\GreaterThanOrEqual(['value'=>5])
+                new Constraints\LessThanOrEqual(['value'=>MAX_COST]),
+                new Constraints\GreaterThanOrEqual(['value'=>MIN_COST])
             ],
-            'Discontinued' => new Constraints\Length([
+            FN_IS_DISCONT => new Constraints\Length([
                 'min' => 0,
                 'max' => 3,
                 'minMessage' => ' must be at least {{ limit }} characters long, you have {{ value }}',
@@ -108,6 +114,8 @@ class ParcerController extends AbstractController
         $violations = $validator->validate($data, $constraint);
         return $violations;
     }
+
+
 
 
 

@@ -69,7 +69,7 @@ class ParserCommand extends Command
             {
 
                 foreach ($data['valid'] as $record) {
-                    $prodType = $this->getProductTypeId($record['values']["Product Name"]);
+                    $prodType = $this->getProductTypeId($record['values'][FN_PRODUCT_NAME]);
                     $this->setProduct($record,$prodType,$counter);
                 }
             }
@@ -88,19 +88,19 @@ class ParserCommand extends Command
     {
         $em = $this->container->get('doctrine')->getManager();
         $repositoryProduct = $em->getRepository(Tblproductdata::class);
-        $product=$repositoryProduct->find($record['values']['Product Code']);
+        $product=$repositoryProduct->find($record['values'][FN_PRODUCT_CODE]);
         if(is_null($product)) {
             $product = new Tblproductdata();
-            $product->setStrProductCode($record['values']['Product Code']);
+            $product->setStrProductCode($record['values'][FN_PRODUCT_CODE]);
             $counter['insert']++;
         }
         else
             $counter['update']++;
         $product->setIdProductType($prodType);
-        $product->setFloatCost($record['values']['Cost in GBP']);
-        $product->setIntStock($record['values']['Stock']);
-        $product->setStrProductDescription($record['values']['Product Description']);
-        $product->setDtmDiscontinued($record['values']['Discontinued']);
+        $product->setFloatCost($record['values'][FN_COST]);
+        $product->setIntStock($record['values'][FN_STOCK]);
+        $product->setStrProductDescription($record['values'][FN_PRODUCT_DESCRIPTION]);
+        $product->setDtmDiscontinued($record['values'][FN_IS_DISCONT]);
         $em->persist($product);
         $em->flush();
 
