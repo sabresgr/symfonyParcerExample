@@ -3,8 +3,6 @@
 namespace App\Tests;
 //include_once(__DIR__."/../config/constants.php");
 
-use App\Command\ParserCommand;
-use App\Controller\ParcerController;
 use PHPUnit\Framework\TestCase;
 
 class CommandTest extends TestCase
