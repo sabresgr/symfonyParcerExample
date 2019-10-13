@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Controller\ParcerController;
-use App\Controller\PushController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
@@ -40,49 +39,41 @@ class ParserCommand extends Command
         $fileName = $input->getArgument('filename');
         self::fileNameCheck($fileName,$io);
         $data=ParcerController::processFile($fileName);
-        $em = $this->container->get('doctrine')->getManager();
+        $counter=array('insert'=>0,'update'=>0);
         if(!$input->getOption('test'))
             if(count($data['valid']))
             {
-                $countInsert=0;
-                $countUpdate=0;
+
                 foreach ($data['valid'] as $record) {
                     $prodType = $this->getProductTypeId($record);
-                    $repositoryProduct = $em->getRepository(Tblproductdata::class);
-                    $product=$repositoryProduct->find($record['values']['Product Code']);
-                    if(is_null($product)) {
-                        $product = new Tblproductdata();
-                        $product->setStrProductCode($record['values']['Product Code']);
-                        $countInsert++;
-                    }
-                    else
-                        $countUpdate++;
-                    $product->setIdProductType($prodType);
-                    $product->setFloatCost($record['values']['Cost in GBP']);
-                    $product->setIntStock($record['values']['Stock']);
-                    $product->setStrProductDescription($record['values']['Product Description']);
-                    $product->setDtmDiscontinued($record['values']['Discontinued']);
-                    $em->persist($product);
-                    $em->flush();
-
+                    $this->setProduct($record,$prodType,$counter);
                 }
-                $data['dbcount']['insert']=$countInsert;
-                $data['dbcount']['update']=$countUpdate;
             }
+        $data['dbcount']=$counter;
         self::printInformation($data,$io);
 
-
-
-
-/*
-
-        if ($input->getOption('option1')) {
-            $io->comment("option");
-            // ...
+}
+    protected function setProduct($record,$prodType,array &$counter)
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $repositoryProduct = $em->getRepository(Tblproductdata::class);
+        $product=$repositoryProduct->find($record['values']['Product Code']);
+        if(is_null($product)) {
+            $product = new Tblproductdata();
+            $product->setStrProductCode($record['values']['Product Code']);
+            $counter['insert']++;
         }
+        else
+            $counter['update']++;
+        $product->setIdProductType($prodType);
+        $product->setFloatCost($record['values']['Cost in GBP']);
+        $product->setIntStock($record['values']['Stock']);
+        $product->setStrProductDescription($record['values']['Product Description']);
+        $product->setDtmDiscontinued($record['values']['Discontinued']);
+        $em->persist($product);
+        $em->flush();
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-*/  }
+    }
 
     protected function getProductTypeId($record)
     {

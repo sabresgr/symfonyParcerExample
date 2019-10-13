@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="620dd93f-5cda-418a-a849-c5ed97b81d5a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Command/ParserCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/ParserCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PushController.php" beforeDir="false" afterPath="$PROJECT_DIR$/PushController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Tblproductdata.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Tblproductdata.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,11 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Command/ParserCommand.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="110" column="75" selection-start-line="110" selection-start-column="75" selection-end-line="110" selection-end-column="75" />
-              <folding>
-                <element signature="e#31#59#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="180">
+              <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -321,12 +315,12 @@
       <option name="presentableId" value="Default" />
       <updated>1570824784625</updated>
       <workItem from="1570824785707" duration="11221000" />
-      <workItem from="1570859858614" duration="36121000" />
+      <workItem from="1570859858614" duration="36819000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47342000" />
+    <option name="totallyTimeSpent" value="48040000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
@@ -618,11 +612,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Command/ParserCommand.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="110" column="75" selection-start-line="110" selection-start-column="75" selection-end-line="110" selection-end-column="75" />
-          <folding>
-            <element signature="e#31#59#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="180">
+          <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
         </state>
       </provider>
     </entry>
