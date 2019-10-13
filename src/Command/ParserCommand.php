@@ -44,22 +44,30 @@ class ParserCommand extends Command
         if(!$input->getOption('test'))
             if(count($data['valid']))
             {
+                $countInsert=0;
+                $countUpdate=0;
                 foreach ($data['valid'] as $record) {
                     $prodType = $this->getProductTypeId($record);
-                    print_r($record);
-                    $product=new Tblproductdata();
-                    $product->setStrProductCode($record['values']['Product Code']);
+                    $repositoryProduct = $em->getRepository(Tblproductdata::class);
+                    $product=$repositoryProduct->find($record['values']['Product Code']);
+                    if(is_null($product)) {
+                        $product = new Tblproductdata();
+                        $product->setStrProductCode($record['values']['Product Code']);
+                        $countInsert++;
+                    }
+                    else
+                        $countUpdate++;
                     $product->setIdProductType($prodType);
                     $product->setFloatCost($record['values']['Cost in GBP']);
                     $product->setIntStock($record['values']['Stock']);
                     $product->setStrProductDescription($record['values']['Product Description']);
                     $product->setDtmDiscontinued($record['values']['Discontinued']);
-
                     $em->persist($product);
-                    var_dump($em->flush());
-                    exit();
+                    $em->flush();
 
                 }
+                $data['dbcount']['insert']=$countInsert;
+                $data['dbcount']['update']=$countUpdate;
             }
         self::printInformation($data,$io);
 
@@ -100,7 +108,7 @@ class ParserCommand extends Command
     {
         $info=self::createOutputInformation($data);
         $io->text("Number of records: ".$info["count"]["all"]);
-        $io->success("Number of successful: ".$info["count"]["success"]);
+        $io->success("Number of successful: ".$info["count"]["success"]."\n  Inserts:".$info["count"]["db"]['insert']."  Updates: ".$info["count"]["db"]['update']);
         $io->warning("Number of faild: ".$info["count"]["faild"]);
         $io->text($info['text']);
     }
@@ -109,6 +117,7 @@ class ParserCommand extends Command
         $arrResult=array();
         $arrResult["count"]["success"]=count($data['valid']);
         $arrResult["count"]["faild"]=count($data['invalid']);
+        $arrResult["count"]["db"]=$data['dbcount'];
         $arrResult["count"]["all"]=$arrResult["count"]["success"]+$arrResult["count"]["faild"];
         $text="";
         foreach($data['invalid'] as $item)

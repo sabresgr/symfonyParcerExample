@@ -9,10 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Tblproductdata
  *
  * @ORM\Table(
- *     indexes={
- *     @ORM\Index(name="idx_code", columns={"strProductCode"}),
- *     },
  *     name="tblProductData",
+
  *     uniqueConstraints={
  *         @ORM\UniqueConstraint(name="strProductCode", columns={"strProductCode"})
  *     }
@@ -21,14 +19,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tblproductdata
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="intProductDataId", type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $intproductdataid;
 
 
     /**
@@ -40,7 +30,7 @@ class Tblproductdata
 
     /**
      * @var string
-     *
+     * @ORM\Id
      * @ORM\Column(name="strProductCode", type="string", length=10, nullable=false)
      */
     private $strproductcode;
@@ -120,10 +110,6 @@ class Tblproductdata
         return $this->floatCost;
     }
 
-    public function getProductId(): int
-    {
-        return $this->intproductdataid;
-    }
 
     public function setFloatCost(float $floatCost): self
     {
@@ -149,6 +135,8 @@ class Tblproductdata
     {
         if($dis=="yes")
             $this->dtmdiscontinued = new \DateTime();
+        else
+            $this->dtmdiscontinued = null;
 
         return $this;
     }
