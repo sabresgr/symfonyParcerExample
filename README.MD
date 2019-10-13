@@ -13,3 +13,9 @@ cd symfonyParcerExample
 composer install
 ```
 
+## Settings
+ Change DB user and DB password in .env
+```
+DATABASE_URL=mysql://USER:PASSWORD@127.0.0.1:3306/importTest
+```
+
