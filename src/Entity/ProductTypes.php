@@ -35,6 +35,9 @@ class ProductTypes
      */
     private $tblproductdatas;
 
+    /**
+     * ProductTypes constructor.
+     */
     public function __construct()
     {
         $this->tblproductdatas = new ArrayCollection();
@@ -48,6 +51,10 @@ class ProductTypes
         return $this->tblproductdatas;
     }
 
+    /**
+     * @param \App\Entity\Tblproductdata $tblproductdata
+     * @return \App\Entity\ProductTypes
+     */
     public function addTblproductdata(Tblproductdata $tblproductdata): self
     {
         if (!$this->tblproductdatas->contains($tblproductdata)) {
@@ -58,6 +65,10 @@ class ProductTypes
         return $this;
     }
 
+    /**
+     * @param \App\Entity\Tblproductdata $tblproductdata
+     * @return \App\Entity\ProductTypes
+     */
     public function removeTblproductdata(Tblproductdata $tblproductdata): self
     {
         if ($this->tblproductdatas->contains($tblproductdata)) {
@@ -70,10 +81,19 @@ class ProductTypes
 
         return $this;
     }
+
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
+
+    /**
+     * @param $data
+     * @return $this
+     */
     public function setStrTypeName($data)
     {
         $this->strTypeName = $data;

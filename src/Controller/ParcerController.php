@@ -9,9 +9,17 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Validation;
 
+/**
+ * Class ParcerController
+ * @package App\Controller
+ */
 class ParcerController extends AbstractController
 {
 
+    /**
+     * @param $fileName
+     * @return array
+     */
     public static function processFile($fileName)
     {
         $data=self::readFile($fileName);
@@ -30,6 +38,11 @@ class ParcerController extends AbstractController
         }
         return $arrResult;
     }
+
+    /**
+     * @param $fileName
+     * @return mixed
+     */
     protected static function readFile($fileName)
     {
 
@@ -37,6 +50,11 @@ class ParcerController extends AbstractController
         $data = $serializer->decode(file_get_contents($fileName), 'csv');
         return $data;
     }
+
+    /**
+     * @param $data
+     * @return \Symfony\Component\Validator\ConstraintViolationListInterface
+     */
     protected static function validateProduct($data)
     {
         $validator = Validation::createValidator();
