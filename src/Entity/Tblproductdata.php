@@ -109,5 +109,4 @@ class Tblproductdata
         return $this;
     }
 
-
 }

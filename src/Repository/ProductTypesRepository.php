@@ -19,22 +19,22 @@ class ProductTypesRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductTypes::class);
     }
 
-    // /**
-    //  * @return ProductTypes[] Returns an array of ProductTypes objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return ProductTypes[] Returns an array of ProductTypes objects
+      */
+
+    public function findByStrTypeName($value)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
+            ->andWhere('p.str_type_name = :val')
             ->setParameter('val', $value)
             ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            ->setMaxResults(1)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?ProductTypes

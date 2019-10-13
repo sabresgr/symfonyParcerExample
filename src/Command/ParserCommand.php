@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Controller\ParcerController;
+use App\Controller\PushController;
 
 
 class ParserCommand extends Command
@@ -33,6 +34,8 @@ class ParserCommand extends Command
         if(!$input->getOption('test'))
             if(count($data['valid']))
             {
+                $pusher=new PushController();
+                $pusher->pushToDB($data['valid']);
                 echo "NotTest";
             }
         self::printInformation($data,$io);
