@@ -19,3 +19,23 @@ composer install
 DATABASE_URL=mysql://USER:PASSWORD@127.0.0.1:3306/importTest
 ```
 
+## Call example
+
+```
+php bin/console app:parser  ~/Downloads/stock.csv
+```
+Output example (not full, because small screen)
+
+![Alt text](output_example.png?raw=true "Title")
+
+## Test mode call
+
+```
+php bin/console app:parser  ~/Downloads/stock.csv --test
+```
+
+## Tests Call
+
+```
+./bin/phpunit
+```
