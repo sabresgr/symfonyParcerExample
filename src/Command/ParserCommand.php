@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Entity\ProductTypes;
+use App\Entity\Tblproductdata;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,11 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Controller\ParcerController;
 use App\Controller\PushController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 class ParserCommand extends Command
 {
     protected static $defaultName = 'app:parser';
+    private $container;
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct();
+        $this->container = $container;
+    }
 
     protected function configure()
     {
@@ -31,12 +40,18 @@ class ParserCommand extends Command
         $fileName = $input->getArgument('filename');
         self::fileNameCheck($fileName,$io);
         $data=ParcerController::processFile($fileName);
+        $em = $this->container->get('doctrine')->getManager();
         if(!$input->getOption('test'))
             if(count($data['valid']))
             {
-                $pusher=new PushController();
-                $pusher->pushToDB($data['valid']);
-                echo "NotTest";
+                foreach ($data['valid'] as $record) {
+                    $prodTypeId = $this->getProductTypeId($record);
+                    $product=new Tblproductdata();
+                    //$em->persist($product);
+                    //print_r($em->flush());
+                    //exit();
+
+                }
             }
         self::printInformation($data,$io);
 
@@ -53,6 +68,26 @@ class ParserCommand extends Command
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 */  }
 
+    protected function getProductTypeId($record)
+    {
+            $em = $this->container->get('doctrine')->getManager();
+            $repositoryProdType = $em->getRepository(ProductTypes::class);
+
+            $prodType=$record['values']["Product Name"];
+            $result=$repositoryProdType->findOneBy(["strTypeName"=>$prodType]);
+            if(is_null($result))
+            {
+                $pt=new ProductTypes();
+                $pt->setStrTypeName($record['values']["Product Name"]);
+                $em->persist($pt);
+                $em->flush();
+                return $pt->getId();
+            }
+            else
+                return $result->getId();
+
+
+    }
     protected static function printInformation($data,SymfonyStyle &$io)
     {
         $info=self::createOutputInformation($data);

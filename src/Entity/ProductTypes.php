@@ -70,6 +70,16 @@ class ProductTypes
 
         return $this;
     }
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function setStrTypeName($data)
+    {
+        $this->strTypeName = $data;
+        return $this;
+    }
+
 
 
 

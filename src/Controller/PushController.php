@@ -7,13 +7,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\ProductTypes;
 use App\Entity\Tblproductdata;
 
+
 class PushController extends AbstractController
 {
+   /* protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        //parent::__construct();
+        $this->container = $container;
+    }*/
 
 
 
     public  function pushToDB($records)
     {
+
 
         $pType=new ProductTypes();
         $em = $this->getDoctrine()->getManager();

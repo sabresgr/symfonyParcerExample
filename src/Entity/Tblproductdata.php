@@ -39,7 +39,7 @@ class Tblproductdata
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="dtmAdded", type="datetime", nullable=true)
+     * @ORM\Column(name="dtmAdded", type="datetime",options={"default"="CURRENT_TIMESTAMP"})
      */
     private $dtmadded;
 
@@ -73,8 +73,10 @@ class Tblproductdata
      */
     private $floatCost;
 
+
     public function getIdProductType(): ?ProductTypes
     {
+
         return $this->idProductType;
     }
 
@@ -102,11 +104,38 @@ class Tblproductdata
         return $this->floatCost;
     }
 
+    public function getProductId(): int
+    {
+        return $this->intproductdataid;
+    }
+
     public function setFloatCost(float $floatCost): self
     {
         $this->floatCost = $floatCost;
 
         return $this;
     }
+
+    public function setStrProductCode(string $productCode): self
+    {
+        $this->strproductcode = $productCode;
+
+        return $this;
+    }
+    public function setStrProductDescription(string $productDescription): self
+    {
+        $this->strproductdesc = $productDescription;
+
+        return $this;
+    }
+
+    public function setDtmDiscontinued($dis): self
+    {
+       // if($dis=="yes")
+      //      $this->dtmdiscontinued = 'CURRENT_TIMESTAMP';
+
+        return $this;
+    }
+
 
 }
